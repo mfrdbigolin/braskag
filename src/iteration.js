@@ -1,17 +1,17 @@
 /* Iterator's mechanism
- * Copyright (C) 2020 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
-"use strict";
+'use strict'
 
-const lex = require("./lex");
-const grammar = require("./grammar");
+const lex = require('./lex')
+const grammar = require('./grammar')
 
-const { jumpLabel } = lex;
-const { LOOP_START } = lex.Token;
+const { jumpLabel } = lex
+const { LOOP_START } = lex.Token
 
-const { parseOp } = grammar;
+const { parseOp } = grammar
 
 /* Nota bene arrObj will be mutated; this function has side effects.  Using
  * the <iterate> function before this one is recommended.
@@ -21,39 +21,39 @@ const { parseOp } = grammar;
  *   Another possible issue is that this function uses a recursive
  * process, that may incur in further performance byproducts.
  */
-function iterCore(tokens, arrObj, once = false) {
-  const jumpSeq = jumpLabel(tokens);
+function iterCore (tokens, arrObj, once = false) {
+  const jumpSeq = jumpLabel(tokens)
 
   while (once || arrObj.arr[arrObj.ind] !== 0) {
-    let jumpId = 0;
+    let jumpId = 0
 
     for (let i = 0; i < tokens.length; ++i) {
       if (tokens[i] === LOOP_START) {
         const iterBlock = tokens.slice(jumpSeq[jumpId][0] + 1,
-                                       jumpSeq[jumpId][1]);
-        arrObj = iterCore(iterBlock, arrObj);
+          jumpSeq[jumpId][1])
+        arrObj = iterCore(iterBlock, arrObj)
 
-        i = jumpSeq[jumpId++][1] + 1;
+        i = jumpSeq[jumpId++][1] + 1
       }
-      arrObj = parseOp(tokens[i], arrObj);
+      arrObj = parseOp(tokens[i], arrObj)
     }
 
     if (once) {
-      break;
+      once = false
     }
   }
 
-  return arrObj;
+  return arrObj
 }
 
 /* The <once> variable is a clever way of reusing the same function for
  * both a simple iteration and for the whole program execution.
  */
-function iterate(tokens, arrObj, once = false) {
+function iterate (tokens, arrObj, once = false) {
   // Deep copy arrObj.
-  let arrObjCopy = JSON.parse(JSON.stringify(arrObj));
+  const arrObjCopy = JSON.parse(JSON.stringify(arrObj))
 
-  return iterCore(tokens, arrObjCopy, once);
+  return iterCore(tokens, arrObjCopy, once)
 }
 
-exports.iterate = iterate;
+exports.iterate = iterate

@@ -7,12 +7,12 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest"
+    "test": "standard --verbose && jest"
   },
   "author": "mfrdbigolin",
   "license": "Apache-2.0",
   "devDependencies": {
-    "eslint": "^7.9.0",
-    "jest": "^26.1.0"
+    "jest": "^26.1.0",
+    "standard": "^16.0.3"
   }
 }

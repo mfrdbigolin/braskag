@@ -1,10 +1,15 @@
-# *Braskag*: Brainfuck Interpreter [![Public license](https://img.shields.io/badge/Apache--2.0-yellow?logo=spdx&logoColor=white)](./LICENSE)
+<!--
+  - Copyright (C) 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+  - SPDX-License-Identifier: Apache-2.0
+  -->
+
+# *Braskag*: Brainfuck Interpreter [![Public license](https://img.shields.io/badge/Apache--2.0-yellow?logo=spdx&logoColor=white)](./LICENSE) [![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 A   [Brainfuck](https://esolangs.org/wiki/Brainfuck)   interpreter.    This
 project was not designed to be the fastest and the most efficient one; but,
 it  was projected  to be  correct and  consistent.  To  achieve this  goal,
 several  interpreter  options  are  designed to  suffice  for  the  various
-behaviors of conflicting implementation.
+behaviors of conflicting implementations.
 
 Currently in a state of  work-in-progress, with the core interpreter almost
 done  (except  for  the  user   input  support);  interpreter  options  are
