@@ -1,5 +1,5 @@
 /* Iterator's mechanism
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -24,6 +24,8 @@ const { parseOp } = grammar
 function iterCore (tokens, arrObj, once = false) {
   const jumpSeq = jumpLabel(tokens)
 
+  // Really unnecessary ESLint warning.
+  // eslint-disable-next-line no-unmodified-loop-condition
   while (once || arrObj.arr[arrObj.ind] !== 0) {
     let jumpId = 0
 
@@ -39,7 +41,7 @@ function iterCore (tokens, arrObj, once = false) {
     }
 
     if (once) {
-      once = false
+      break
     }
   }
 
