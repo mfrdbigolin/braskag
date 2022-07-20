@@ -1,17 +1,18 @@
 /* Language operations
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
-const options = require('./options')
+const { Directions, Behaviors } = require('./options')
 
 const OPERATIONS = [movRight, movLeft, add, sub, output, input]
 
-function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
-  const { RIGHT, LEFT, BOTH } = options.Directions
+const { RIGHT, LEFT, BOTH } = Directions
+const { ERROR, WRAP } = Behaviors
 
+function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
   switch (CELL_DIRECTION) {
     case BOTH:
       return Math.floor((CELL_NUM - 1) / 2)
@@ -25,8 +26,6 @@ function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
 }
 
 function cellLower ({ CELL_NUM, CELL_DIRECTION }) {
-  const { RIGHT, LEFT, BOTH } = options.Directions
-
   switch (CELL_DIRECTION) {
     case BOTH:
       return -Math.floor(CELL_NUM / 2)
@@ -40,8 +39,6 @@ function cellLower ({ CELL_NUM, CELL_DIRECTION }) {
 }
 
 function movRight (pointer, { CELL_NUM, CELL_DIRECTION, BOUND_BEHAVIOR }) {
-  const { ERROR, WRAP } = options.Behaviors
-
   if ((pointer + 1) > cellUpper({ CELL_NUM, CELL_DIRECTION })) {
     switch (BOUND_BEHAVIOR) {
       case ERROR:
@@ -57,8 +54,6 @@ function movRight (pointer, { CELL_NUM, CELL_DIRECTION, BOUND_BEHAVIOR }) {
 }
 
 function movLeft (pointer, { CELL_NUM, CELL_DIRECTION, BOUND_BEHAVIOR }) {
-  const { ERROR, WRAP } = options.Behaviors
-
   if ((pointer - 1) < cellLower({ CELL_NUM, CELL_DIRECTION })) {
     switch (BOUND_BEHAVIOR) {
       case ERROR:
@@ -74,9 +69,7 @@ function movLeft (pointer, { CELL_NUM, CELL_DIRECTION, BOUND_BEHAVIOR }) {
 }
 
 function add (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
-  const { ERROR, WRAP } = options.Behaviors
-
-  if ((cell + 1) > CELL_RANGE) {
+  if ((cell + 1) >= CELL_RANGE) {
     if (OVERFLOW_BEHAVIOR === ERROR) {
       throw new Error('Overflow')
     } else if (OVERFLOW_BEHAVIOR === WRAP) {
@@ -90,13 +83,11 @@ function add (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
 }
 
 function sub (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
-  const { ERROR, WRAP } = options.Behaviors
-
   if (cell < 1) {
     if (OVERFLOW_BEHAVIOR === ERROR) {
       throw new Error('Underflow')
     } else if (OVERFLOW_BEHAVIOR === WRAP) {
-      return CELL_RANGE
+      return CELL_RANGE - 1
     }
   } else {
     cell -= 1
