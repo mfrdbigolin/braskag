@@ -1,25 +1,25 @@
 /* Test suites for the move functions, operations.js
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
-const options = require('../../src/options')
+const { Directions, Behaviors, Options } = require('../../src/options')
 
-const { RIGHT, LEFT, BOTH } = options.Directions
-const { ERROR, UNCHANGED, WRAP } = options.Behaviors
+const { RIGHT, LEFT, BOTH } = Directions
+const { ERROR, UNCHANGED, WRAP } = Behaviors
 
 const suites = [
-  new options.Options(100, RIGHT, 128, ERROR, ERROR),
-  new options.Options(100, RIGHT, 128, ERROR, UNCHANGED),
-  new options.Options(100, RIGHT, 128, ERROR, WRAP),
-  new options.Options(100, LEFT, 128, ERROR, ERROR),
-  new options.Options(100, LEFT, 128, ERROR, UNCHANGED),
-  new options.Options(100, LEFT, 128, ERROR, WRAP),
-  new options.Options(100, BOTH, 128, ERROR, ERROR),
-  new options.Options(100, BOTH, 128, ERROR, UNCHANGED),
-  new options.Options(100, BOTH, 128, ERROR, WRAP)
+  new Options({ dir: RIGHT, bound: ERROR }),
+  new Options({ dir: RIGHT, bound: UNCHANGED }),
+  new Options({ dir: RIGHT, bound: WRAP }),
+  new Options({ dir: LEFT, bound: ERROR }),
+  new Options({ dir: LEFT, bound: UNCHANGED }),
+  new Options({ dir: LEFT, bound: WRAP }),
+  new Options({ dir: BOTH, bound: ERROR }),
+  new Options({ dir: BOTH, bound: UNCHANGED }),
+  new Options({ dir: BOTH, bound: WRAP })
 ]
 
 exports.suites = suites

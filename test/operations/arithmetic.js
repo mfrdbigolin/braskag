@@ -1,19 +1,18 @@
 /* Test suites for the arithmetic functions, operations.js
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
-const options = require('../../src/options')
+const { Behaviors, Options } = require('../../src/options')
 
-const { RIGHT } = options.Directions
-const { ERROR, UNCHANGED, WRAP } = options.Behaviors
+const { ERROR, UNCHANGED, WRAP } = Behaviors
 
 const suites = [
-  new options.Options(100, RIGHT, 128, ERROR, ERROR),
-  new options.Options(100, RIGHT, 128, UNCHANGED, ERROR),
-  new options.Options(100, RIGHT, 128, WRAP, ERROR)
+  new Options({ over: ERROR }),
+  new Options({ over: UNCHANGED }),
+  new Options({ over: WRAP })
 ]
 
 exports.suites = suites
