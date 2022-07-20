@@ -1,5 +1,5 @@
 /* Lexical and syntatic analysis
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -16,52 +16,62 @@ const Token = Object.freeze({
   LOOP_END: 7
 })
 
-const Lexeme = ['>', '<', '+', '-', '.', ',', '[', ']']
+const Lexeme = Object.freeze(['>', '<', '+', '-', '.', ',', '[', ']'])
+const { LOOP_START, LOOP_END } = Token
 
 function tokenizer (bfCode) {
-  let tokens = []
+  const tokens = []
 
   bfCode.split('').forEach((op) => {
     if (Lexeme.includes(op)) {
-      tokens = [...tokens, Lexeme.indexOf(op)]
+      tokens.push(Lexeme.indexOf(op))
     }
   })
 
   return tokens
 }
 
-/* 0: ok, 1: unmatched left bracket, 2: unmatched right bracket.  */
+const BlockState = Object.freeze({
+  OK: 0,
+  UNMATCHED_LEFT: 1,
+  UNMATCHED_RIGHT: 2
+})
+
+const { OK, UNMATCHED_LEFT, UNMATCHED_RIGHT } = BlockState
+
 function checkBlock (tokens) {
-  const filtTokens = tokens.filter((tok) => (tok === Token.LOOP_START) ||
-                                   (tok === Token.LOOP_END))
-  let stat = 0
+  const filtTokens = tokens.filter((tok) => (tok === LOOP_START) ||
+                                            (tok === LOOP_END))
+  let stat = OK
 
   filtTokens.some((tok) => {
-    stat += (tok === Token.LOOP_START ? 1 : -1)
+    stat += (tok === LOOP_START ? 1 : -1)
 
     return stat < 0
   })
 
-  return !stat ? stat : (stat >= 1 ? 1 : 2)
+  return !stat ? OK : (stat >= 1 ? UNMATCHED_LEFT : UNMATCHED_RIGHT)
 }
 
 function jumpLabel (tokens) {
-  if (checkBlock(tokens) === 1) {
+  const blockCheck = checkBlock(tokens)
+
+  if (blockCheck === UNMATCHED_LEFT) {
     throw new Error('Unmatched left bracket')
-  } else if (checkBlock(tokens) === 2) {
+  } else if (blockCheck === UNMATCHED_RIGHT) {
     throw new Error('Unmatched right bracket')
   }
 
-  let labels = []
+  const labels = []
   let depth = 0
 
   tokens.forEach((tok, i) => {
-    if (tok === Token.LOOP_START) {
+    if (tok === LOOP_START) {
       if (++depth === 1) {
-        labels = [...labels, [i]]
+        labels.push([i])
       }
     }
-    if (tok === Token.LOOP_END) {
+    if (tok === LOOP_END) {
       if (--depth === 0) {
         labels[labels.length - 1][1] = i
       }
@@ -76,3 +86,4 @@ exports.Lexeme = Lexeme
 exports.checkBlock = checkBlock
 exports.jumpLabel = jumpLabel
 exports.Token = Token
+exports.BlockState = BlockState

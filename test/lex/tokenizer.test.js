@@ -1,38 +1,46 @@
 /* Test cases for tokenizer, lex.js
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
 require('../testDriver')
-const lex = require('../../src/lex')
+const { tokenizer, Lexeme, Token } = require('../../src/lex')
 
-const { tokenizer, Lexeme } = lex
 const {
-  RIGHT, LEFT, PLUS, MINUS, OUTPUT,
-  INPUT, LOOP_START, LOOP_END
-} = lex.Token
-
-const tokenizerCases = [
-  [[''], [], 0],
-  [['noop'], [], 0],
-  [['trailá>>> mid <ç~<-- end'], [0, 0, 0, 1, 1, 3, 3], 0],
-  [['><+-.,[]'], [0, 1, 2, 3, 4, 5, 6, 7], 0]
-]
+  RIGHT, LEFT, PLUS, MINUS, OUTPUT, INPUT, LOOP_START, LOOP_END
+} = Token
 
 /* Check if the association between lexemes and tokens is correct.  */
 const lexemeCases = [
-  [['>'], RIGHT, 0],
-  [['<'], LEFT, 0],
-  [['+'], PLUS, 0],
-  [['-'], MINUS, 0],
-  [['.'], OUTPUT, 0],
-  [[','], INPUT, 0],
-  [['['], LOOP_START, 0],
-  [[']'], LOOP_END, 0]
+  [['>'], RIGHT],
+  [['<'], LEFT],
+  [['+'], PLUS],
+  [['-'], MINUS],
+  [['.'], OUTPUT],
+  [[','], INPUT],
+  [['['], LOOP_START],
+  [[']'], LOOP_END]
 ]
 
-tokenizerCases.tst(tokenizer, 'token tokenizer')
+const tokenizerCases = [
+  [[''], []],
+  [['noop\0'], []],
+  [
+    ['trai:láß>>\n> mid <ç~<\t--Wǒ end'],
+    [RIGHT, RIGHT, RIGHT, LEFT, LEFT, MINUS, MINUS]
+  ],
+  [
+    ['><+-.,[]'],
+    [RIGHT, LEFT, PLUS, MINUS, OUTPUT, INPUT, LOOP_START, LOOP_END]
+  ],
+  [
+    ['<[+,.-]>'],
+    [LEFT, LOOP_START, PLUS, INPUT, OUTPUT, MINUS, LOOP_END, RIGHT]
+  ]
+]
+
 lexemeCases.tst(Array.prototype.indexOf.bind(Lexeme),
   'Lexeme associativity test')
+tokenizerCases.tst(tokenizer, 'tokens tokenizer')
