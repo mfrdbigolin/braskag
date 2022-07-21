@@ -12,13 +12,13 @@ const { ERROR, UNCHANGED, WRAP } = Behaviors
 
 const suites = [
   new Options({ dir: RIGHT, bound: ERROR }),
-  new Options({ dir: RIGHT, bound: UNCHANGED }),
-  new Options({ dir: RIGHT, bound: WRAP }),
   new Options({ dir: LEFT, bound: ERROR }),
-  new Options({ dir: LEFT, bound: UNCHANGED }),
-  new Options({ dir: LEFT, bound: WRAP }),
   new Options({ dir: BOTH, bound: ERROR }),
+  new Options({ dir: RIGHT, bound: UNCHANGED }),
+  new Options({ dir: LEFT, bound: UNCHANGED }),
   new Options({ dir: BOTH, bound: UNCHANGED }),
+  new Options({ dir: RIGHT, bound: WRAP }),
+  new Options({ dir: LEFT, bound: WRAP }),
   new Options({ dir: BOTH, bound: WRAP })
 ]
 

@@ -1,37 +1,37 @@
 /* Test cases for movLeft, operations.js
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
 require('../testDriver.js')
-const operations = require('../../src/operations')
-const mov = require('./mov')
+const { movLeft, cellUpper, cellLower } = require('../../src/operations')
+const { suites } = require('./mov')
 
 const boundCases = [
-  [[0, mov.suites[0]], /Lower/, 1],
-  [[0, mov.suites[1]], 0, 0],
-  [[0, mov.suites[2]], 99, 0],
-  [[-99, mov.suites[3]], /Lower/, 1],
-  [[-99, mov.suites[4]], -99, 0],
-  [[-99, mov.suites[5]], 0, 0],
-  [[-50, mov.suites[6]], /Lower/, 1],
-  [[-50, mov.suites[7]], -50, 0],
-  [[-50, mov.suites[8]], 49, 0]
+  [[cellLower(suites[0]), suites[0]], /Lower/, true],
+  [[cellLower(suites[1]), suites[1]], /Lower/, true],
+  [[cellLower(suites[2]), suites[2]], /Lower/, true],
+  [[cellLower(suites[3]), suites[3]], cellLower(suites[3])],
+  [[cellLower(suites[4]), suites[4]], cellLower(suites[4])],
+  [[cellLower(suites[5]), suites[5]], cellLower(suites[5])],
+  [[cellLower(suites[6]), suites[6]], cellUpper(suites[6])],
+  [[cellLower(suites[7]), suites[7]], cellUpper(suites[7])],
+  [[cellLower(suites[8]), suites[8]], cellUpper(suites[8])]
 ]
 
 const edgeCases = [
-  [[1, mov.suites[0]], 0, 0],
-  [[1, mov.suites[1]], 0, 0],
-  [[1, mov.suites[2]], 0, 0],
-  [[-98, mov.suites[3]], -99, 0],
-  [[-98, mov.suites[4]], -99, 0],
-  [[-98, mov.suites[5]], -99, 0],
-  [[-49, mov.suites[6]], -50, 0],
-  [[-49, mov.suites[7]], -50, 0],
-  [[-49, mov.suites[8]], -50, 0]
+  [[cellLower(suites[0]) + 1, suites[0]], cellLower(suites[0])],
+  [[cellLower(suites[1]) + 1, suites[1]], cellLower(suites[1])],
+  [[cellLower(suites[2]) + 1, suites[2]], cellLower(suites[2])],
+  [[cellLower(suites[3]) + 1, suites[3]], cellLower(suites[3])],
+  [[cellLower(suites[4]) + 1, suites[4]], cellLower(suites[4])],
+  [[cellLower(suites[5]) + 1, suites[5]], cellLower(suites[5])],
+  [[cellLower(suites[6]) + 1, suites[6]], cellLower(suites[6])],
+  [[cellLower(suites[7]) + 1, suites[7]], cellLower(suites[7])],
+  [[cellLower(suites[8]) + 1, suites[8]], cellLower(suites[8])]
 ]
 
-boundCases.tst(operations.movLeft, 'bound movLeft')
-edgeCases.tst(operations.movLeft, 'edge movLeft')
+boundCases.tst(movLeft, 'bound movLeft')
+edgeCases.tst(movLeft, 'edge movLeft')

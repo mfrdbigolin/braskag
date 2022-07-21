@@ -14,12 +14,12 @@ const { ERROR, WRAP } = Behaviors
 
 function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
   switch (CELL_DIRECTION) {
-    case BOTH:
-      return Math.floor((CELL_NUM - 1) / 2)
     case RIGHT:
       return CELL_NUM - 1
     case LEFT:
       return 0
+    case BOTH:
+      return Math.floor(CELL_NUM / 2)
     default:
       throw new Error('Unknown cell direction')
   }
@@ -27,12 +27,12 @@ function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
 
 function cellLower ({ CELL_NUM, CELL_DIRECTION }) {
   switch (CELL_DIRECTION) {
-    case BOTH:
-      return -Math.floor(CELL_NUM / 2)
     case RIGHT:
       return 0
     case LEFT:
       return -CELL_NUM + 1
+    case BOTH:
+      return -Math.floor((CELL_NUM - 1) / 2)
     default:
       throw new Error('Unknown cell direction')
   }

@@ -1,25 +1,25 @@
-/* Test cases for the move functions, operations.js; range testing
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+/* Test cases for the range functions, operations.js
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
 'use strict'
 
 require('../testDriver.js')
-const operations = require('../../src/operations')
-const mov = require('./mov')
+const { cellUpper, cellLower } = require('../../src/operations')
+const { suites } = require('./mov')
 
 const upperCases = [
-  [[mov.suites[0]], 99, 0],
-  [[mov.suites[3]], 0, 0],
-  [[mov.suites[6]], 49, 0]
+  [[suites[0]], suites[0].CELL_NUM - 1],
+  [[suites[1]], 0],
+  [[suites[2]], Math.floor(suites[2].CELL_NUM / 2)]
 ]
 
 const lowerCases = [
-  [[mov.suites[0]], 0, 0],
-  [[mov.suites[3]], -99, 0],
-  [[mov.suites[6]], -50, 0]
+  [[suites[0]], 0],
+  [[suites[1]], -suites[1].CELL_NUM + 1],
+  [[suites[2]], -Math.floor((suites[2].CELL_NUM - 1) / 2)]
 ]
 
-upperCases.tst(operations.cellUpper, 'cellUpper')
-lowerCases.tst(operations.cellLower, 'cellLower')
+upperCases.tst(cellUpper, 'cellUpper')
+lowerCases.tst(cellLower, 'cellLower')
