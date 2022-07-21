@@ -70,10 +70,11 @@ function movLeft (pointer, { CELL_NUM, CELL_DIRECTION, BOUND_BEHAVIOR }) {
 
 function add (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
   if ((cell + 1) >= CELL_RANGE) {
-    if (OVERFLOW_BEHAVIOR === ERROR) {
-      throw new Error('Overflow')
-    } else if (OVERFLOW_BEHAVIOR === WRAP) {
-      return 0
+    switch (OVERFLOW_BEHAVIOR) {
+      case ERROR:
+        throw new Error('Overflow')
+      case WRAP:
+        return 0
     }
   } else {
     cell += 1
@@ -84,10 +85,11 @@ function add (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
 
 function sub (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
   if (cell < 1) {
-    if (OVERFLOW_BEHAVIOR === ERROR) {
-      throw new Error('Underflow')
-    } else if (OVERFLOW_BEHAVIOR === WRAP) {
-      return CELL_RANGE - 1
+    switch (OVERFLOW_BEHAVIOR) {
+      case ERROR:
+        throw new Error('Underflow')
+      case WRAP:
+        return CELL_RANGE - 1
     }
   } else {
     cell -= 1
