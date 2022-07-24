@@ -101,8 +101,13 @@ function sub (cell, { CELL_RANGE, OVERFLOW_BEHAVIOR }) {
   return cell
 }
 
+// Return the printed character for testing purposes.
 function output (cell) {
-  process.stdout.write(String.fromCharCode(cell))
+  const character = String.fromCharCode(cell)
+
+  process.stdout.write(character)
+
+  return character
 }
 
 let buffer = []
@@ -112,6 +117,7 @@ let buffer = []
  * `inputCore`, below, reads the input from a stream, whether its the stdin or a
  * file, and does not use global variables.
  */
+// TODO: After input, clear terminal line.
 function input ({ INPUT_BEHAVIOR }, filepath) {
   let source = buffer
 
