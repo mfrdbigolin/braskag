@@ -15,7 +15,8 @@ class Options {
     dir = DefaultOptions.CELL_DIRECTION,
     range = DefaultOptions.CELL_RANGE,
     over = DefaultOptions.OVERFLOW_BEHAVIOR,
-    bound = DefaultOptions.BOUND_BEHAVIOR
+    bound = DefaultOptions.BOUND_BEHAVIOR,
+    input = DefaultOptions.INPUT_BEHAVIOR
   } = DefaultOptions) {
     if (num < 2) {
       throw new Error('The number of cells must be at least 2.')
@@ -28,6 +29,7 @@ class Options {
     this.CELL_RANGE = range
     this.OVERFLOW_BEHAVIOR = over
     this.BOUND_BEHAVIOR = bound
+    this.INPUT_BEHAVIOR = input
   }
 }
 
@@ -62,5 +64,6 @@ const DefaultOptions = ({
 exports.args = args
 exports.Behaviors = Behaviors
 exports.Directions = Directions
+exports.Input = Input
 exports.InterpreterOptions = DefaultOptions
 exports.Options = Options

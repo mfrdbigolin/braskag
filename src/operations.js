@@ -5,12 +5,15 @@
 
 'use strict'
 
-const { Directions, Behaviors } = require('./options')
+const { Directions, Behaviors, Input } = require('./options')
+const fs = require('fs')
+const readline = require('readline-sync')
 
 const OPERATIONS = [movRight, movLeft, add, sub, output, input]
 
 const { RIGHT, LEFT, BOTH } = Directions
 const { ERROR, WRAP } = Behaviors
+const { FILE, PROCEDURAL, PREEMPTIVE } = Input
 
 function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
   switch (CELL_DIRECTION) {
@@ -102,9 +105,49 @@ function output (cell) {
   process.stdout.write(String.fromCharCode(cell))
 }
 
-// TODO
-function input (cell) {
-  process.stdout.write('í')
+let buffer = []
+
+/* This function is not pure, considering that it uses the `buffer` global
+ * variable, therefore it carries functional collateral effects.  The function
+ * `inputCore`, below, reads the input from a stream, whether its the stdin or a
+ * file, and does not use global variables.
+ */
+function input ({ INPUT_BEHAVIOR }, filepath) {
+  let source = buffer
+
+  if (buffer.length === 0) {
+    source = inputCore(INPUT_BEHAVIOR, filepath)
+  }
+
+  switch (INPUT_BEHAVIOR) {
+    case FILE: case PREEMPTIVE:
+      buffer = source
+
+      return buffer.pop()
+    case PROCEDURAL:
+      return source.pop()
+  }
+}
+
+function inputCore (behavior, filepath) {
+  let stream
+
+  if (behavior === FILE) {
+    const file = fs.readFileSync(filepath, { encoding: 'utf-8', flag: 'r' })
+    // Remove the last newline.
+    stream = file.slice(0, -1)
+  } else {
+    readline.setDefaultOptions({ prompt: '\n> ' })
+    stream = readline.prompt()
+  }
+
+  if (stream.length === 0) {
+    stream = behavior === FILE ? '\0' : '\n'
+  }
+
+  const source = stream.split('').map(c => c.codePointAt(0)).reverse()
+
+  return source
 }
 
 // Individual operations, for testing purposes.

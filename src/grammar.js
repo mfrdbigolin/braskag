@@ -1,5 +1,5 @@
 /* Grammatical parsing
- * Copyright (C) 2020, 2021 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
+ * Copyright (C) 2020–2022 Matheus Fernandes Bigolin <mfrdrbigolin@disroot.org>
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -26,9 +26,14 @@ function parseOp (token, { arr, ind }) {
     case PLUS: case MINUS:
       arr[ind] = OPERATIONS[token](arr[ind], InterpreterOptions)
       break
-    case OUTPUT: case INPUT:
+    case OUTPUT:
       OPERATIONS[token](arr[ind])
       break
+    case INPUT:
+      arr[ind] = OPERATIONS[token](InterpreterOptions)
+      break
+    default:
+      throw new Error('Unknown operation')
   }
 
   return ({ arr, ind })
