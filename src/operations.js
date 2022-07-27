@@ -143,9 +143,18 @@ function inputCore (behavior, filepath) {
     // Remove the last newline.
     stream = file.slice(0, -1)
   } else {
-    readline.setDefaultOptions({ prompt: '\n> ' })
+    // ANSI: Save the cursor position before the prompt.
+    readline.setDefaultOptions({ prompt: '\x1B[s\n> ', keepWhitespace: true })
     stream = readline.prompt()
   }
+
+  // Clear input prompt.
+  // ANSI: Move to previous line.
+  process.stdout.write('\x1B[1A')
+  // ANSI: Wipe out the entire line.
+  process.stdout.write('\x1B[2K')
+  // ANSI: Restore the cursor position.
+  process.stdout.write('\x1B[u\x1B[C\b')
 
   if (stream.length === 0) {
     stream = behavior === FILE ? '\0' : '\n'
