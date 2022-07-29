@@ -35,9 +35,10 @@ function iterCore (tokens, arrObj, once = false) {
           jumpSeq[jumpId][1])
         arrObj = iterCore(iterBlock, arrObj)
 
-        i = jumpSeq[jumpId++][1] + 1
+        i = jumpSeq[jumpId++][1]
+      } else {
+        arrObj = parseOp(tokens[i], arrObj)
       }
-      arrObj = parseOp(tokens[i], arrObj)
     }
 
     if (once) {
