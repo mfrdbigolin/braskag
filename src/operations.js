@@ -11,7 +11,7 @@ const readline = require('readline-sync')
 
 const OPERATIONS = [movRight, movLeft, add, sub, output, input]
 
-const { RIGHT, LEFT, BOTH } = Directions
+const { RIGHT, LEFT, CENTER } = Directions
 const { ERROR, WRAP } = Behaviors
 const { FILE, PROCEDURAL, PREEMPTIVE } = Input
 
@@ -21,7 +21,7 @@ function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
       return CELL_NUM - 1
     case LEFT:
       return 0
-    case BOTH:
+    case CENTER:
       return Math.floor(CELL_NUM / 2)
     default:
       throw new Error('Unknown cell direction')
@@ -34,7 +34,7 @@ function cellLower ({ CELL_NUM, CELL_DIRECTION }) {
       return 0
     case LEFT:
       return -CELL_NUM + 1
-    case BOTH:
+    case CENTER:
       return -Math.floor((CELL_NUM - 1) / 2)
     default:
       throw new Error('Unknown cell direction')
@@ -117,7 +117,6 @@ let buffer = []
  * `inputCore`, below, reads the input from a stream, whether its the stdin or a
  * file, and does not use global variables.
  */
-// TODO: After input, clear terminal line.
 function input ({ INPUT_BEHAVIOR }, filepath) {
   let source = buffer
 

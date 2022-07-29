@@ -5,18 +5,15 @@
 
 'use strict'
 
-const lex = require('./lex')
-const operations = require('./operations')
-const options = require('./options')
+const { Token } = require('./lex')
+const { OPERATIONS } = require('./operations')
 
-const { RIGHT, LEFT, PLUS, MINUS, OUTPUT, INPUT } = lex.Token
-const { OPERATIONS } = operations
-const { InterpreterOptions } = options
+const { RIGHT, LEFT, PLUS, MINUS, OUTPUT, INPUT } = Token
 
-function parseOp (token, { arr, ind }) {
+function parseOp (token, { arr, ind }, options) {
   switch (token) {
     case RIGHT: case LEFT:
-      ind = OPERATIONS[token](ind, InterpreterOptions)
+      ind = OPERATIONS[token](ind, options)
 
       // "Discover" a new square tile.
       if (arr[ind] === null) {
@@ -24,13 +21,13 @@ function parseOp (token, { arr, ind }) {
       }
       break
     case PLUS: case MINUS:
-      arr[ind] = OPERATIONS[token](arr[ind], InterpreterOptions)
+      arr[ind] = OPERATIONS[token](arr[ind], options)
       break
     case OUTPUT:
       OPERATIONS[token](arr[ind])
       break
     case INPUT:
-      arr[ind] = OPERATIONS[token](InterpreterOptions)
+      arr[ind] = OPERATIONS[token](options)
       break
     default:
       throw new Error('Unknown operation')

@@ -7,8 +7,6 @@
 
 'use strict'
 
-const args = process.argv.slice(2)
-
 class Options {
   constructor ({
     num = DefaultOptions.CELL_NUM,
@@ -42,10 +40,9 @@ const Behaviors = Object.freeze({
 const Directions = Object.freeze({
   RIGHT: 0,
   LEFT: 1,
-  BOTH: 2
+  CENTER: 2
 })
 
-// TODO
 const Input = Object.freeze({
   FILE: 0,
   PREEMPTIVE: 1,
@@ -56,14 +53,13 @@ const DefaultOptions = ({
   CELL_NUM: 30000,
   CELL_DIRECTION: Directions.RIGHT,
   CELL_RANGE: 128,
-  OVERFLOW_BEHAVIOR: Behaviors.UNCHANGED,
+  OVERFLOW_BEHAVIOR: Behaviors.ERROR,
   BOUND_BEHAVIOR: Behaviors.ERROR,
   INPUT_BEHAVIOR: Input.PROCEDURAL
 })
 
-exports.args = args
 exports.Behaviors = Behaviors
 exports.Directions = Directions
 exports.Input = Input
-exports.InterpreterOptions = DefaultOptions
 exports.Options = Options
+exports.DefaultOptions = DefaultOptions

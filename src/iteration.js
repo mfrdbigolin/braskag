@@ -21,7 +21,7 @@ const { parseOp } = grammar
  *   Another possible issue is that this function uses a recursive
  * process, that may incur in further performance byproducts.
  */
-function iterCore (tokens, arrObj, once = false) {
+function iterCore (tokens, arrObj, options, once = false) {
   const jumpSeq = jumpLabel(tokens)
 
   // Really unnecessary ESLint warning.
@@ -33,11 +33,11 @@ function iterCore (tokens, arrObj, once = false) {
       if (tokens[i] === LOOP_START) {
         const iterBlock = tokens.slice(jumpSeq[jumpId][0] + 1,
           jumpSeq[jumpId][1])
-        arrObj = iterCore(iterBlock, arrObj)
+        arrObj = iterCore(iterBlock, arrObj, options)
 
         i = jumpSeq[jumpId++][1]
       } else {
-        arrObj = parseOp(tokens[i], arrObj)
+        arrObj = parseOp(tokens[i], arrObj, options)
       }
     }
 
@@ -52,11 +52,11 @@ function iterCore (tokens, arrObj, once = false) {
 /* The <once> variable is a clever way of reusing the same function for
  * both a simple iteration and for the whole program execution.
  */
-function iterate (tokens, arrObj, once = false) {
+function iterate (tokens, arrObj, options, once = false) {
   // Deep copy arrObj.
   const arrObjCopy = JSON.parse(JSON.stringify(arrObj))
 
-  return iterCore(tokens, arrObjCopy, once)
+  return iterCore(tokens, arrObjCopy, options, once)
 }
 
 exports.iterate = iterate

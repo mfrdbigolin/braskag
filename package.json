@@ -16,6 +16,7 @@
     "standard": "^16.0.3"
   },
   "dependencies": {
+    "commander": "^9.4.0",
     "readline-sync": "^1.4.10"
   }
 }
