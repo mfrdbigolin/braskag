@@ -5,6 +5,8 @@
 
 'use strict'
 
+const { Command, Option } = require('commander')
+
 class Options {
   constructor ({
     num = DefaultOptions.CELL_NUM,
@@ -61,8 +63,37 @@ const StrictOptions = ({
 
 const DefaultOptions = StrictOptions
 
+const program = new Command()
+
+const parseInteger = (numStr, _) => parseInt(numStr, 10)
+
+program
+  .name('braskag')
+  .description('Brainfuck interpreter')
+  .argument('<source>', 'Brainfuck source code')
+  .version('1.0', '--version')
+
+  .option('-d, --debug', 'print the program tape at the end')
+  .option('-p, --program', 'interpret <source> as Brainfuck code')
+
+  .option('-c, --cells <int>', 'number of cells in the tape',
+    parseInteger, 30000)
+  .option('-r, --range <int>', 'numeric cell range', parseInteger, 128)
+  .option('-f, --file <files...>', 'input files to be read')
+  .option('-i, --initial-input <inputs...>', 'initial inputs read by the program')
+
+  .addOption(new Option('-D, --direction <way>', 'tape orientation')
+    .choices(['right', 'left', 'center']).default('right'))
+  .addOption(new Option('-F, --flow <behavior>', 'out-of-range cell value')
+    .choices(['error', 'unchanged', 'wrap']).default('error'))
+  .addOption(new Option('-B, --bound <behavior>', 'out-of-bound cell behavior')
+    .choices(['error', 'unchanged', 'wrap']).default('error'))
+  .addOption(new Option('-I, --input <behavior>', 'input behavior')
+    .choices(['procedural', 'preemptive', 'cyclic']).default('procedural'))
+
 exports.Behaviors = Behaviors
 exports.Directions = Directions
 exports.Input = Input
 exports.Options = Options
 exports.DefaultOptions = DefaultOptions
+exports.program = program

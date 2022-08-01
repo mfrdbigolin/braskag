@@ -9,36 +9,7 @@ const fs = require('fs')
 
 const { tokenizer } = require('./lex')
 const { iterate } = require('./iteration')
-const { Command, Option } = require('commander')
-const { Options, Behaviors, Directions, Input } = require('./options')
-
-const program = new Command()
-
-const parseInteger = (numStr, _) => parseInt(numStr, 10)
-
-program
-  .name('braskag')
-  .description('Brainfuck interpreter')
-  .argument('<source>', 'Brainfuck source code')
-  .version('1.0', '--version')
-
-  .option('-d, --debug', 'print the program tape at the end')
-  .option('-p, --program', 'interpret <source> as Brainfuck code')
-
-  .option('-c, --cells <int>', 'number of cells in the tape',
-    parseInteger, 30000)
-  .option('-r, --range <int>', 'numeric cell range', parseInteger, 128)
-  .option('-f, --file <files...>', 'input files to be read')
-  .option('-i, --initial-input <inputs...>', 'initial inputs read by the program')
-
-  .addOption(new Option('-D, --direction <way>', 'tape orientation')
-    .choices(['right', 'left', 'center']).default('right'))
-  .addOption(new Option('-F, --flow <behavior>', 'out-of-range cell value')
-    .choices(['error', 'unchanged', 'wrap']).default('error'))
-  .addOption(new Option('-B, --bound <behavior>', 'out-of-bound cell behavior')
-    .choices(['error', 'unchanged', 'wrap']).default('error'))
-  .addOption(new Option('-I, --input <behavior>', 'input behavior')
-    .choices(['procedural', 'preemptive', 'cyclic']).default('procedural'))
+const { Options, Behaviors, Directions, Input, program } = require('./options')
 
 program.parse()
 
@@ -75,18 +46,18 @@ function processInputSources (fileSources, contentSources) {
   const files = fileSources ?? []
   const contents = contentSources ?? []
 
-  const inputSource = []
+  const inputSources = []
 
   for (const file of files) {
     const fileContent = fs.readFileSync(file, { encoding: 'utf-8', flag: 'r' })
 
     // Remove the remainder newline.
-    inputSource.push(fileContent.slice(0, -1))
+    inputSources.push(fileContent.slice(0, -1))
   }
 
-  inputSource.push(...contents)
+  inputSources.push(...contents)
 
-  let source = inputSource.join('').split('')
+  let source = inputSources.join('').split('')
 
   // If only a empty stream was provided, let the source be a newline or null.
   if (source.length === 0) {
@@ -110,8 +81,9 @@ const range = options.range
 const over = Behaviors[options.flow.toUpperCase()]
 const bound = Behaviors[options.bound.toUpperCase()]
 const input = Input[options.input.toUpperCase()]
+const debug = options.debug
 
-const InterpreterOptions = new Options({ num, dir, range, over, bound, input })
+const InterpreterOptions = new Options({ num, dir, range, over, bound, input, debug })
 
 const source = program.args
 
