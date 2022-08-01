@@ -6,14 +6,13 @@
 'use strict'
 
 const { Directions, Behaviors, Input } = require('./options')
-const fs = require('fs')
 const readline = require('readline-sync')
 
 const OPERATIONS = [movRight, movLeft, add, sub, output, input]
 
 const { RIGHT, LEFT, CENTER } = Directions
 const { ERROR, WRAP } = Behaviors
-const { FILE, PROCEDURAL, PREEMPTIVE } = Input
+const { CYCLIC, PROCEDURAL, PREEMPTIVE } = Input
 
 function cellUpper ({ CELL_NUM, CELL_DIRECTION }) {
   switch (CELL_DIRECTION) {
@@ -117,15 +116,15 @@ let buffer = []
  * `inputCore`, below, reads the input from a stream, whether its the stdin or a
  * file, and does not use global variables.
  */
-function input ({ INPUT_BEHAVIOR }, filepath) {
+function input (inputSource, { INPUT_BEHAVIOR }) {
   let source = buffer
 
   if (buffer.length === 0) {
-    source = inputCore(INPUT_BEHAVIOR, filepath)
+    source = inputCore(INPUT_BEHAVIOR, inputSource)
   }
 
   switch (INPUT_BEHAVIOR) {
-    case FILE: case PREEMPTIVE:
+    case CYCLIC: case PREEMPTIVE:
       buffer = source
 
       return buffer.pop()
@@ -134,18 +133,14 @@ function input ({ INPUT_BEHAVIOR }, filepath) {
   }
 }
 
-function inputCore (behavior, filepath) {
-  let stream
-
-  if (behavior === FILE) {
-    const file = fs.readFileSync(filepath, { encoding: 'utf-8', flag: 'r' })
-    // Remove the last newline.
-    stream = file.slice(0, -1)
-  } else {
-    // ANSI: Save the cursor position before the prompt.
-    readline.setDefaultOptions({ prompt: '\x1B[s\n> ', keepWhitespace: true })
-    stream = readline.prompt()
+function inputCore (behavior, inputSource) {
+  if (inputSource.length > 0) {
+    return behavior === CYCLIC ? inputSource : [inputSource.pop()]
   }
+
+  // ANSI: Save the cursor position before the prompt.
+  readline.setDefaultOptions({ prompt: '\x1B[s\n> ', keepWhitespace: true })
+  const stream = readline.prompt() || '\n'
 
   // Clear input prompt.
   // ANSI: Move to previous line.
@@ -154,10 +149,6 @@ function inputCore (behavior, filepath) {
   process.stdout.write('\x1B[2K')
   // ANSI: Restore the cursor position.
   process.stdout.write('\x1B[u\x1B[C\b')
-
-  if (stream.length === 0) {
-    stream = behavior === FILE ? '\0' : '\n'
-  }
 
   const source = stream.split('').map(c => c.codePointAt(0)).reverse()
 

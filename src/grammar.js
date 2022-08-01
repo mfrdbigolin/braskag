@@ -10,7 +10,7 @@ const { OPERATIONS } = require('./operations')
 
 const { RIGHT, LEFT, PLUS, MINUS, OUTPUT, INPUT } = Token
 
-function parseOp (token, { arr, ind }, options) {
+function parseOp (token, { arr, ind }, inputSource, options) {
   switch (token) {
     case RIGHT: case LEFT:
       ind = OPERATIONS[token](ind, options)
@@ -27,7 +27,7 @@ function parseOp (token, { arr, ind }, options) {
       OPERATIONS[token](arr[ind])
       break
     case INPUT:
-      arr[ind] = OPERATIONS[token](options)
+      arr[ind] = OPERATIONS[token](inputSource, options)
       break
     default:
       throw new Error('Unknown operation')

@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-// Work-in-progress.
-
 'use strict'
 
 class Options {
@@ -14,7 +12,8 @@ class Options {
     range = DefaultOptions.CELL_RANGE,
     over = DefaultOptions.OVERFLOW_BEHAVIOR,
     bound = DefaultOptions.BOUND_BEHAVIOR,
-    input = DefaultOptions.INPUT_BEHAVIOR
+    input = DefaultOptions.INPUT_BEHAVIOR,
+    debug = DefaultOptions.DEBUG
   } = DefaultOptions) {
     if (num < 2) {
       throw new Error('The number of cells must be at least 2.')
@@ -28,35 +27,39 @@ class Options {
     this.OVERFLOW_BEHAVIOR = over
     this.BOUND_BEHAVIOR = bound
     this.INPUT_BEHAVIOR = input
+    this.DEBUG = debug
   }
 }
 
 const Behaviors = Object.freeze({
-  ERROR: 0,
-  UNCHANGED: 1,
-  WRAP: 2
+  ERROR: Symbol('ERROR'),
+  UNCHANGED: Symbol('UNCHANGED'),
+  WRAP: Symbol('WRAP')
 })
 
 const Directions = Object.freeze({
-  RIGHT: 0,
-  LEFT: 1,
-  CENTER: 2
+  RIGHT: Symbol('RIGHT'),
+  LEFT: Symbol('LEFT'),
+  CENTER: Symbol('CENTER')
 })
 
 const Input = Object.freeze({
-  FILE: 0,
-  PREEMPTIVE: 1,
-  PROCEDURAL: 2
+  PROCEDURAL: Symbol('PROCEDURAL'),
+  PREEMPTIVE: Symbol('PREEMPTIVE'),
+  CYCLIC: Symbol('CYCLIC')
 })
 
-const DefaultOptions = ({
+const StrictOptions = ({
   CELL_NUM: 30000,
   CELL_DIRECTION: Directions.RIGHT,
   CELL_RANGE: 128,
   OVERFLOW_BEHAVIOR: Behaviors.ERROR,
   BOUND_BEHAVIOR: Behaviors.ERROR,
-  INPUT_BEHAVIOR: Input.PROCEDURAL
+  INPUT_BEHAVIOR: Input.PROCEDURAL,
+  DEBUG: false
 })
+
+const DefaultOptions = StrictOptions
 
 exports.Behaviors = Behaviors
 exports.Directions = Directions

@@ -7,12 +7,12 @@
 
 const { Input, Options } = require('../../src/options')
 
-const { FILE, PREEMPTIVE, PROCEDURAL } = Input
+const { PROCEDURAL, PREEMPTIVE, CYCLIC } = Input
 
 const suites = [
-  new Options({ input: FILE }),
+  new Options({ input: PROCEDURAL }),
   new Options({ input: PREEMPTIVE }),
-  new Options({ input: PROCEDURAL })
+  new Options({ input: CYCLIC })
 ]
 
 exports.suites = suites

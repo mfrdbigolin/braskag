@@ -23,10 +23,14 @@ program
   .version('1.0', '--version')
 
   .option('-d, --debug', 'print the program tape at the end')
+  .option('-p, --program', 'interpret <source> as Brainfuck code')
+
   .option('-c, --cells <int>', 'number of cells in the tape',
     parseInteger, 30000)
   .option('-r, --range <int>', 'numeric cell range', parseInteger, 128)
-  .option('-f, --file <files...>', 'input file to be read')
+  .option('-f, --file <files...>', 'input files to be read')
+  .option('-i, --initial-input <inputs...>', 'initial inputs read by the program')
+
   .addOption(new Option('-D, --direction <way>', 'tape orientation')
     .choices(['right', 'left', 'center']).default('right'))
   .addOption(new Option('-F, --flow <behavior>', 'out-of-range cell value')
@@ -34,39 +38,68 @@ program
   .addOption(new Option('-B, --bound <behavior>', 'out-of-bound cell behavior')
     .choices(['error', 'unchanged', 'wrap']).default('error'))
   .addOption(new Option('-I, --input <behavior>', 'input behavior')
-    .choices(['procedural', 'preemptive', 'file']).default('procedural'))
-  .option('-p, --program', 'interpret <source> as Brainfuck code')
+    .choices(['procedural', 'preemptive', 'cyclic']).default('procedural'))
 
 program.parse()
 
-function start (bfCode, options, debug = false) {
-  const { CELL_NUM } = options
+function start (sourceCode, inputSource, options) {
+  const { DEBUG, CELL_NUM } = options
 
-  const tokens = tokenizer(bfCode)
+  const tokens = tokenizer(sourceCode)
   let arrObj = {
-    arr: (new Array(!isFinite(CELL_NUM) ? 1 : CELL_NUM))
-      .fill(null),
+    arr: (new Array(!isFinite(CELL_NUM) ? 1 : CELL_NUM)).fill(null),
     ind: 0
   }
 
   arrObj.arr[0] = 0
 
-  arrObj = iterate(tokens, arrObj, options, true)
+  arrObj = iterate(tokens, arrObj, inputSource, options, true)
 
-  if (debug) {
+  if (DEBUG) {
     process.stdout.write('\n')
     console.log(arrObj)
   }
 }
 
-function parseArgs (source, options, { isCode = false, debug = false }) {
+function processSourceCode (source, isCode = false) {
   let sourceCode = source
 
   if (!isCode) {
     sourceCode = fs.readFileSync(source, { encoding: 'utf-8', flag: 'r' })
   }
 
-  start(sourceCode, options, debug)
+  return sourceCode
+}
+
+function processInputSources (fileSources, contentSources) {
+  const files = fileSources ?? []
+  const contents = contentSources ?? []
+
+  const inputSource = []
+
+  for (const file of files) {
+    const fileContent = fs.readFileSync(file, { encoding: 'utf-8', flag: 'r' })
+
+    // Remove the remainder newline.
+    inputSource.push(fileContent.slice(0, -1))
+  }
+
+  inputSource.push(...contents)
+
+  let source = inputSource.join('').split('')
+
+  // If only a empty stream was provided, let the source be a newline or null.
+  if (source.length === 0) {
+    if (files.length > 0) {
+      source = '\n'
+    } else if (contents.length > 0) {
+      source = '\0'
+    }
+  }
+
+  const charList = source.map(c => c.codePointAt(0)).reverse()
+
+  return charList
 }
 
 const options = program.opts()
@@ -82,7 +115,7 @@ const InterpreterOptions = new Options({ num, dir, range, over, bound, input })
 
 const source = program.args
 
-const debug = options.debug
-const isCode = options.program
+const sourceCode = processSourceCode(source[0], options.program)
+const inputSource = processInputSources(options.file, options.initialInput)
 
-parseArgs(source[0], InterpreterOptions, { isCode, debug })
+start(sourceCode, inputSource, InterpreterOptions)

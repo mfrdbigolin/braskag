@@ -10,41 +10,39 @@ require('../testDriver.js')
 const { input } = require('../../src/operations')
 const { suites } = require('./input')
 
-const fs = require('fs')
 const readline = require('readline-sync')
 
-const fileSource = 'abc'
+const fileSource = 'abc'.split('').map(c => c.codePointAt(0))
 const inputSource = 'WXYZ'
 
-const fileCases = fileSource.split('').map(chr => [
-  [suites[0], '~PLACEHOLDER~.bin'], chr.codePointAt(0)
+const proceduralCases = inputSource.split('').map(() => [
+  ['', suites[0]], inputSource[0].codePointAt(0)
 ])
 
 const preemptiveCases = inputSource.split('').map(chr => [
-  [suites[1]], chr.codePointAt(0)
+  ['', suites[1]], chr.codePointAt(0)
 ])
 
-const proceduralCases = inputSource.split('').map(() => [
-  [suites[2]], inputSource[0].codePointAt(0)
+const cyclicCases = fileSource.map(chr => [
+  [fileSource.reverse(), suites[2]], chr
 ])
 
 const emptyCases = [
-  [[suites[0], '~PLACEHOLDER~.bin'], 0],
-  [[suites[1]], 10],
-  [[suites[2]], 10]
+  [['', suites[0]], 10],
+  [['', suites[1]], 10],
+  [['', suites[2]], 10]
 ]
 
 const mocks = [
-  [[fs, 'readFileSync'], () => fileSource + '\n'],
-  [[readline, 'prompt'], () => inputSource]
+  [[readline, 'prompt'], () => inputSource],
+  [[process.stdout, 'write'], () => 'oasdfjsdifjsd']
 ]
 
 const emptyMocks = [
-  [[readline, 'prompt'], () => ''],
-  [[fs, 'readFileSync'], () => '']
+  [[readline, 'prompt'], () => '']
 ]
 
-fileCases.tst(input, 'file input', mocks)
-preemptiveCases.tst(input, 'preemptive input', mocks)
 proceduralCases.tst(input, 'procedural input', mocks)
+preemptiveCases.tst(input, 'preemptive input', mocks)
+cyclicCases.tst(input, 'file input', mocks)
 emptyCases.tst(input, 'empty input', emptyMocks)

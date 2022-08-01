@@ -15,15 +15,15 @@ const n = 5
 const initialModel = () => ({ arr: [null, n, null], ind: 1 })
 
 const iterateCases = [
-  [[tokenizer('-'), initialModel(), DefaultOptions],
+  [[tokenizer('-'), initialModel(), '', DefaultOptions],
     { arr: [null, 0, null], ind: 1 }],
-  [[tokenizer('-'), initialModel(), DefaultOptions, true],
+  [[tokenizer('-'), initialModel(), '', DefaultOptions, true],
     { arr: [null, n - 1, null], ind: 1 }],
-  [[tokenizer('<+>>++<-'), initialModel(), DefaultOptions],
-    { arr: [n, 0, 2*n], ind: 1 }],
-  [[tokenizer('->[+<]'), initialModel(), DefaultOptions],
+  [[tokenizer('<+>>++<-'), initialModel(), '', DefaultOptions],
+    { arr: [n, 0, 2 * n], ind: 1 }],
+  [[tokenizer('->[+<]'), initialModel(), '', DefaultOptions],
     { arr: [null, n - 1, 0], ind: 2 }],
-  [[tokenizer('<+[+>]+[<--]'), initialModel(), DefaultOptions],
+  [[tokenizer('<+[+>]+[<--]'), initialModel(), '', DefaultOptions],
     { arr: [0, n - 1, 1], ind: 0 }]
 ]
 
