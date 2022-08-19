@@ -48,6 +48,8 @@ function processInputSources (fileSources, contentSources) {
 
   const inputSources = []
 
+  inputSources.push(...contents)
+
   for (const file of files) {
     const fileContent = fs.readFileSync(file, { encoding: 'utf-8', flag: 'r' })
 
@@ -55,16 +57,14 @@ function processInputSources (fileSources, contentSources) {
     inputSources.push(fileContent.slice(0, -1))
   }
 
-  inputSources.push(...contents)
-
   let source = inputSources.join('').split('')
 
   // If only a empty stream was provided, let the source be a newline or null.
   if (source.length === 0) {
     if (files.length > 0) {
-      source = '\n'
+      source = ['\n']
     } else if (contents.length > 0) {
-      source = '\0'
+      source = ['\0']
     }
   }
 

@@ -16,7 +16,7 @@ function parseOp (token, { arr, ind }, inputSource, options) {
       ind = OPERATIONS[token](ind, options)
 
       // "Discover" a new square tile.
-      if (arr[ind] === null) {
+      if (arr[ind] === null || arr[ind] === undefined) {
         arr[ind] = 0
       }
       break

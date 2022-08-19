@@ -23,6 +23,20 @@ class Options {
       throw new Error('The range of a cell must be at least 2.')
     }
 
+    if (isNaN(num)) {
+      throw new Error('Invalid number of cells.  Please input a number greater than two or the value “infinite”.')
+    } else if (isNaN(range)) {
+      throw new Error('Invalid cell range value.  Please input a number greater than two or the value “infinite”.')
+    }
+
+    if (num === Infinity && bound === Behaviors.WRAP) {
+      throw new Error('A bound behavior of “wrap” is not acceptable with an infinite number of cells.')
+    }
+
+    if (range === Infinity && over === Behaviors.WRAP) {
+      throw new Error('An underflow behavior of “wrap” is not acceptable with an infinite range.')
+    }
+
     this.CELL_NUM = num
     this.CELL_DIRECTION = dir
     this.CELL_RANGE = range
@@ -65,20 +79,23 @@ const DefaultOptions = StrictOptions
 
 const program = new Command()
 
-const parseInteger = (numStr, _) => parseInt(numStr, 10)
+const parseInteger = (numStr, _) => (
+  numStr.toLowerCase() === 'infinite' ? Infinity : parseInt(numStr, 10)
+)
 
 program
   .name('braskag')
   .description('Brainfuck interpreter')
   .argument('<source>', 'Brainfuck source code')
-  .version('1.0', '--version')
+  .version('1.0')
 
   .option('-d, --debug', 'print the program tape at the end')
   .option('-p, --program', 'interpret <source> as Brainfuck code')
 
-  .option('-c, --cells <int>', 'number of cells in the tape',
+  .option('-c, --cells <number>|infinite', 'number of cells in the tape',
     parseInteger, 30000)
-  .option('-r, --range <int>', 'numeric cell range', parseInteger, 128)
+  .option('-r, --range <number>|infinite', 'numeric cell range', parseInteger, 128)
+
   .option('-f, --file <files...>', 'input files to be read')
   .option('-i, --initial-input <inputs...>', 'initial inputs read by the program')
 
